@@ -1,0 +1,13 @@
+stages:
+  - release
+
+# Release to docker repository
+release:
+  stage: release
+  image: docker:dind
+  tags:
+    - privateRunner
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" $DOCKER_REPO --password-stdin
+    - "docker build --pull --no-cache --build-arg VERSION=2.12.0 -t $DOCKER_REPO/oscli-helm:latest ."
+    - "docker push $DOCKER_REPO/oscli-helm:latest"
